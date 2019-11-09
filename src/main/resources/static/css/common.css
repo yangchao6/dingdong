@@ -36,8 +36,8 @@
 	padding: 0;
 }
 .grab-sheet-minddle ul>li{
-	width: 101.5px;
-    border: 1px solid #EFEFEF;
+	width: 24.8%;
+    border: 0.1px solid;
     float: left;
     list-style: none;
     background-color: #F3F3F3;

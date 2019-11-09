@@ -21,7 +21,7 @@ public class HomeController {
 	@RequestMapping(value = "/")
 	public ModelAndView homePage() {
 		ModelAndView ma = new ModelAndView();
-		ma.setViewName("html/login.html");
+		ma.setViewName("html/index.html");
 		return ma;
 	}
 
