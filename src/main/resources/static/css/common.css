@@ -99,17 +99,21 @@
 	margin-right: 0.4rem;
 }
 .receipt-input div>input{
-	width: 111px;
+	width: 26%;
     height: 31px;
     padding-left: 0.5rem;
 }
 .receipt-button{
 	width: 100%;
 	height: 100%;
-	margin-top: 0.5rem;
+	margin-top: 1rem;
+	margin-left: 1rem;
 }
 .receipt-button button{
-	margin-left: 1rem;
     width: 26%;
-    margin-top: 0.5rem;
+}
+.msg{
+	display: block;
+	color: red;
+	font-size: 12px;
 }

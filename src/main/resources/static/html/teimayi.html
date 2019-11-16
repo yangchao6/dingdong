@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<title></title>
+		<link rel="stylesheet" href="../css/common.css"/>
+	</head>
+	<link rel="stylesheet" href="../layui/css/layui.css" />
+	<link rel="stylesheet" href="../css/common.css" />
+	<body>
+		<div id="show-body">
+			<div class="search-view">
+				<div class="layui-form receipt-input">
+					<label class="layui-form-label">接单频率：</label>
+					<div class="col-sm-8">
+						<input type="number" value="2000" /><span>-</span><input type="number" value="2000" />
+					</div>
+				</div>
+				<div class="layui-form receipt-input">
+					<label class="layui-form-label">接单账号：</label>
+					<div class="col-sm-8">
+						<input type="text" class="Mobile" value="18665891481" onkeyup="this.value=this.value.replace(/\s+/g,'')" style="width: 60%;" placeholder="请输入账号" />
+						<span class="Mobile_Msg"></span>
+					</div>
+				</div>
+				<div class="layui-form receipt-input">
+					<label class="layui-form-label">接单密码：</label>
+					<div class="col-sm-8">
+						<input type="password" class="password" value="fyjfyq784165" onkeyup="this.value=this.value.replace(/\s+/g,'')" style="width: 60%;" placeholder="请输入密码" />
+						<span class="password_Msg"></span>
+					</div>
+				</div>
+				<div class="layui-form-item receipt-input">
+				    <label class="layui-form-label">选择买号：</label>
+				    <div class="">
+					    <select class="tiemayiType" style="width: 70%;height: 2rem">
+							<option value="1">垫付单</option>
+							<option value="2">浏览单</option>
+						</select>
+				    </div>
+			  	</div>
+				<div class="layui-form">
+					<div class="layui-btn-sm receipt-button">
+						<button id="qiangdan" class="layui-btn layui-btn-primary" style="border: 1px solid #00FF00;color: #00FF00;">开始抢单</button>
+						<button class="layui-btn layui-btn-primary" style="border: 1px solid red;color: red;">停止抢单</button>
+						<button class="layui-btn layui-btn-primary" style="border: 1px solid #ffcf1e;color: #ffcf1e;">切换账号</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="../jQuery/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			
+			$(".Mobile").keydown(function(){
+				$(".Mobile_Msg").removeClass("msg");
+				$(".Mobile_Msg").text("");
+			})
+			$(".password").keydown(function(){
+				$(".password_Msg").removeClass("msg");
+				$(".password_Msg").text("");
+			})
+			
+			$("#qiangdan").click(function(){
+				if ($(".Mobile").val().length == 0){
+					$(".Mobile_Msg").addClass("msg").text("请输入接单账号！");
+					$(".Mobile").select();
+				}else if ($(".password").val().length == 0) {
+					$(".password_Msg").addClass("msg").text("请输入接单账号的密码！");
+					$(".password").select();
+				}else{
+					$.post("../tiemayiLogin",{
+						Mobile:$(".Mobile").val(),
+						PassWord:$(".password").val()
+					},function(data,status){
+						alert(data);
+						if (status == "success") {
+							var obj=eval('('+data+')');
+							if (obj["errcode"] == 0) {
+								var UserId = obj["obj"]["UserId"];
+								var Token = obj["obj"]["Token"];
+								$.post("../tiemayiAccount",{
+									UserId:UserId,
+									Token:Token
+								},function(data,status){
+									if (status == "success") {
+										var data=eval('('+data+')');
+										if (data["errcode"] == 0) {
+											$.post("../tiemayiAccount",{
+												UserId:UserId,
+												Token:Token,
+												TaskType:$(".tiemayiType".val()),
+												AccountId:data["obj"]["Id"]
+											},function(data,status){
+												alert(data +" === "+status);
+											});
+										}else{
+											alert(data["msg"]);
+										}
+									}else{
+										alert("数据异常");
+									}
+								});
+							}else{
+								alert(""+obj["msg"]);
+							}
+						}else{
+							alert("登陆失败！");
+						}
+					});
+				}
+			})
+			/* $(".password").blur(function(){
+				if ($(".password").val().length != 0 && $(".Mobile").val().length != 0) {
+					alert($(".password").val().length);
+					$.post("../tiemayiLogin",{
+						Mobile:$(".Mobile").val(),
+						PassWord:$(".password").val()
+					},function(data,status){
+						alert(data);
+						var obj=eval('('+data+')');
+						if (status == "success") {
+							alert("数据: " + obj["obj"]["Token"] + "\n状态: " + status);
+						}
+					});
+				}
+			}); */
+		</script>
+	</body>
+</html>
