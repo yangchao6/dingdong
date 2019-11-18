@@ -61,6 +61,10 @@
 				$(".password_Msg").text("");
 			})
 			
+			var Token;
+			var UserId;
+			var AccountId;
+			
 			$("#qiangdan").click(function(){
 				if ($(".Mobile").val().length == 0){
 					$(".Mobile_Msg").addClass("msg").text("请输入接单账号！");
@@ -77,8 +81,8 @@
 						if (status == "success") {
 							var obj=eval('('+data+')');
 							if (obj["errcode"] == 0) {
-								var UserId = obj["obj"]["UserId"];
-								var Token = obj["obj"]["Token"];
+								UserId = obj["obj"]["UserId"];
+								Token = obj["obj"]["Token"];
 								$.post("../tiemayiAccount",{
 									UserId:UserId,
 									Token:Token
@@ -86,19 +90,46 @@
 									if (status == "success") {
 										var data=eval('('+data+')');
 										if (data["errcode"] == 0) {
-											$.post("../tiemayiAccount",{
+											AccountId = data["obj"][0]["Id"];
+											$.post("../tiemayiTaskList",{
 												UserId:UserId,
 												Token:Token,
-												TaskType:$(".tiemayiType".val()),
-												AccountId:data["obj"]["Id"]
+												TaskType:$(".tiemayiType").val(),
+												AccountId:AccountId
 											},function(data,status){
-												alert(data +" === "+status);
+												if (status == "success") {
+													var object=eval('('+data+')');
+													if (object["errcode"] == 0) {
+														if (object["obj"]["TaskList"].length > 0) {
+															$.post("../tiemayiSubmit",{
+																UserId:UserId,
+																Token:Token,
+																TaskListNo:object["obj"]["TaskList"][0]["TaskListNo"],
+																AccountId:AccountId
+															},function(data,status){
+																if (status == "success") {
+																	var object_data=eval('('+data+')');
+																	alert(object_data["msg"]);
+																}else{
+																	alert("数据异常，请联系管理员！");
+																}
+															})
+															alert("查询成功");
+														}else{
+															alert("该类型任务已接完，可继续接单，也可切换任务类型后再点击接单！");
+														}
+													}else{
+														alert(object["msg"]);
+													}
+												}else{
+													alert("数据异常，请联系管理员！");
+												}
 											});
 										}else{
 											alert(data["msg"]);
 										}
 									}else{
-										alert("数据异常");
+										alert("数据异常，请联系管理员！");
 									}
 								});
 							}else{

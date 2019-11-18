@@ -33,8 +33,8 @@ public class PuTongController {
 	 * 
 	 * @Title: tiemayiLogin
 	 * @Description: TODO(铁蚂蚁登陆)
-	 * @param @param Mobile  用户名
-	 * @param @param PassWord 密码
+	 * @param @param Mobile
+	 * @param @param PassWord
 	 * @param @return 参数
 	 * @return String 返回类型
 	 * @throws
@@ -55,7 +55,7 @@ public class PuTongController {
 	
 	/**
 	 * 
-	 * @Title: tiemayiSubmit
+	 * @Title: tiemayiAccount
 	 * @Description: TODO(铁蚂蚁用户查询)
 	 * @param @param UserId
 	 * @param @param Token
@@ -65,7 +65,7 @@ public class PuTongController {
 	 */
 	@RequestMapping(value="tiemayiAccount",method=RequestMethod.POST)
 	@ResponseBody
-	public String tiemayiSubmit(String UserId,String Token) {
+	public String tiemayiAccount(String UserId,String Token) {
 		String url = "https://api.damingduo.cn/api/Member/GetBindPlatformAccountList";
 		Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("UserId", UserId);
@@ -76,16 +76,57 @@ public class PuTongController {
 		return result;
 	}
 	
-	
+	/**
+	 * 
+	 * @Title: tiemayiTaskList
+	 * @Description: TODO(查询是否有单子)
+	 * @param @param UserId
+	 * @param @param Token
+	 * @param @param TaskType
+	 * @param @param AccountId
+	 * @param @return 参数
+	 * @return String 返回类型
+	 * @throws
+	 */
 	@RequestMapping(value="tiemayiTaskList",method=RequestMethod.POST)
 	@ResponseBody()
 	public String tiemayiTaskList(String UserId,String Token,String TaskType,String AccountId) {
 		String url = "https://api.damingduo.cn/api/Task/GetTaskList";
 		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("UserId", UserId);
+		parameters.put("Token", Token);
+		parameters.put("TaskType", TaskType);
+		parameters.put("AccountId", AccountId);
 		parameters.put("Page", "1");
 		parameters.put("PageSize", "12");
 		parameters.put("PlatId", "1");
 		parameters.put("MaxAdvancePayMoney", "5000");
+		String result = Commonality.sendPost(url, parameters);
+		System.out.println(result);
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @Title: tiemayiSubmit
+	 * @Description: TODO(铁蚂蚁接单)
+	 * @param @param UserId
+	 * @param @param Token
+	 * @param @param TaskListNo
+	 * @param @param AccountId
+	 * @param @return 参数
+	 * @return String 返回类型
+	 * @throws
+	 */
+	@RequestMapping(value="tiemayiSubmit",method=RequestMethod.POST)
+	@ResponseBody()
+	public String tiemayiSubmit(String UserId,String Token,String TaskListNo,String AccountId) {
+		String url = "https://api.damingduo.cn/api/Task/UserDetermineTask";
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("UserId", UserId);
+		parameters.put("Token", Token);
+		parameters.put("TaskListNo", TaskListNo);
+		parameters.put("AccountId", AccountId);
 		String result = Commonality.sendPost(url, parameters);
 		System.out.println(result);
 		return result;
